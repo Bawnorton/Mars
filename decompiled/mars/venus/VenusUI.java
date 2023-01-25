@@ -2,14 +2,20 @@ package mars.venus;
 
 import mars.Globals;
 import mars.Settings;
+import com.bawnorton.Reflections;
 
 import javax.swing.*;
+import javax.swing.plaf.metal.MetalLookAndFeel;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
+import javax.swing.plaf.synth.SynthLookAndFeel;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
+import java.lang.reflect.Constructor;
 import java.net.URL;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /*
 Copyright (c) 2003-2013,  Pete Sanderson and Kenneth Vollmar
@@ -71,7 +77,7 @@ public class VenusUI extends JFrame {
     EditRedoAction editRedoAction;
     private int frameState; // see windowActivated() and windowDeactivated()
     // components of the menubar
-    private JMenu file, run, window, help, edit, settings;
+    private JMenu file, run, window, help, edit, settings, theme;
     private JMenuItem fileNew, fileOpen, fileClose, fileCloseAll, fileSave, fileSaveAs, fileSaveAll, fileDumpMemory, filePrint, fileExit;
     private JMenuItem editUndo, editRedo, editCut, editCopy, editPaste, editFindReplace, editSelectAll;
     private JMenuItem runGo, runStep, runBackstep, runReset, runAssemble, runStop, runPause, runClearBreakpoints, runToggleBreakpoints;
@@ -574,6 +580,8 @@ public class VenusUI extends JFrame {
         settings.setMnemonic(KeyEvent.VK_S);
         help = new JMenu("Help");
         help.setMnemonic(KeyEvent.VK_H);
+        theme = new JMenu("Theme");
+        theme.setMnemonic(KeyEvent.VK_T);
         // slight bug: user typing alt-H activates help menu item directly, not help menu
 
         fileNew = new JMenuItem(fileNewAction);
@@ -727,6 +735,68 @@ public class VenusUI extends JFrame {
         help.addSeparator();
         help.add(helpAbout);
 
+        JCheckBoxMenuItem defaultTheme = new JCheckBoxMenuItem(new GuiAction("Default", null, null, null, null, mainUI) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ((JCheckBoxMenuItem) e.getSource()).setSelected(true);
+                for(Component component: theme.getMenuComponents()) if(component instanceof JCheckBoxMenuItem && component != e.getSource()) ((JCheckBoxMenuItem) component).setSelected(false);
+
+                SwingUtilities.invokeLater(() -> {
+                    try {
+                        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                        SwingUtilities.updateComponentTreeUI(mainUI);
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                });
+                Globals.getSettings().setSelectedTheme("Default");
+            }
+        });
+        defaultTheme.setSelected(true);
+        theme.add(defaultTheme);
+
+        Set<Class<?>> classes = Reflections.getAllSubTypesOf(LookAndFeel.class);
+        classes.addAll(List.of(MetalLookAndFeel.class, NimbusLookAndFeel.class));
+        for(Class<?> clazz: classes.stream().sorted(Comparator.comparing(Class::getName)).toList()){
+            try {
+                Constructor<?> constructor;
+                try {
+                    constructor = clazz.getConstructor();
+                } catch (NoSuchMethodException e) {
+                    continue;
+                }
+                constructor.setAccessible(true);
+                Object object = constructor.newInstance();
+                if(object instanceof LookAndFeel lookAndFeel) {
+                    theme.add(new JCheckBoxMenuItem(new GuiAction(lookAndFeel.getName(), null, null, null, null, mainUI) {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            ((JCheckBoxMenuItem) e.getSource()).setSelected(true);
+                            for(Component component: theme.getMenuComponents()) if(component instanceof JCheckBoxMenuItem && component != e.getSource()) ((JCheckBoxMenuItem) component).setSelected(false);
+
+                            SwingUtilities.invokeLater(() -> {
+                                try {
+                                    UIManager.setLookAndFeel(lookAndFeel);
+                                    SwingUtilities.updateComponentTreeUI(mainUI);
+                                } catch (Exception exception) {
+                                    exception.printStackTrace();
+                                }
+                            });
+                            Globals.getSettings().setSelectedTheme(lookAndFeel.getName().replaceAll("[^a-zA-Z]", ""));
+                        }
+                    }));
+                }
+            } catch (Exception e) {
+                System.out.println("Error: Could not load LookAndFeel" + clazz.getName());
+                e.printStackTrace();
+            }
+        }
+
+        String themeName = Globals.getSettings().getSelectedTheme();
+        if(themeName != null) {
+            for(Component component: theme.getMenuComponents()) if(component instanceof JCheckBoxMenuItem && ((JCheckBoxMenuItem) component).getText().replaceAll("[^a-zA-Z]", "").equalsIgnoreCase(themeName)) ((JCheckBoxMenuItem) component).doClick();
+        }
+
         menuBar.add(file);
         menuBar.add(edit);
         menuBar.add(run);
@@ -734,6 +804,7 @@ public class VenusUI extends JFrame {
         JMenu toolMenu = new ToolLoader().buildToolsMenu();
         if (toolMenu != null) menuBar.add(toolMenu);
         menuBar.add(help);
+        menuBar.add(theme);
 
         // experiment with popup menu for settings. 3 Aug 2006 PS
         //setupPopupMenu();

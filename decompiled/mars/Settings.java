@@ -185,6 +185,10 @@ public class Settings extends Observable {
      */
     public static final int EDITOR_POPUP_PREFIX_LENGTH = 6;
     /**
+     * The Selected Look and Feel
+     */
+    public static final int SELECTED_THEME = 7;
+    /**
      * Font for the text editor
      */
     public static final int EDITOR_FONT = 0;
@@ -267,7 +271,7 @@ public class Settings extends Observable {
      */
     public static final int REGISTER_HIGHLIGHT_FOREGROUND = 11;
     // Match the above by position.
-    private static final String[] stringSettingsKeys = {"ExceptionHandler", "TextColumnOrder", "LabelSortState", "MemoryConfiguration", "CaretBlinkRate", "EditorTabSize", "EditorPopupPrefixLength"};
+    private static final String[] stringSettingsKeys = {"ExceptionHandler", "TextColumnOrder", "LabelSortState", "MemoryConfiguration", "CaretBlinkRate", "EditorTabSize", "EditorPopupPrefixLength", "SelectedTheme"};
     private static final String[] fontFamilySettingsKeys = {"EditorFontFamily", "EvenRowFontFamily",
             "OddRowFontFamily", " TextSegmentHighlightFontFamily", "TextSegmentDelayslotHighightFontFamily",
             "DataSegmentHighlightFontFamily", "RegisterHighlightFontFamily"
@@ -334,7 +338,7 @@ public class Settings extends Observable {
      * If you wish to change, do so before instantiating the Settings object.
      * Must match key by list position.
      */
-    private static final String[] defaultStringSettingsValues = {"", "0 1 2 3 4", "0", "", "500", "8", "2"};
+    private static final String[] defaultStringSettingsValues = {"", "0 1 2 3 4", "0", "", "500", "8", "2", "Default"};
     /**
      * Last resort default values for color settings;
      * will use only if neither the Preferences nor the properties file work.
@@ -1076,6 +1080,13 @@ public class Settings extends Observable {
         setStringSetting(EDITOR_POPUP_PREFIX_LENGTH, "" + length);
     }
 
+    public String getSelectedTheme() {
+        return stringSettingsValues[SELECTED_THEME];
+    }
+
+    public void setSelectedTheme(String theme) {
+        setStringSetting(SELECTED_THEME, theme);
+    }
     /**
      * Get the text editor default tab size in characters
      *
@@ -1497,5 +1508,4 @@ public class Settings extends Observable {
         }
         return list;
     }
-
 }
