@@ -33,8 +33,6 @@ public class TextAreaPainter extends JComponent implements TabExpander {
     protected JEditTextArea textArea;
     protected SyntaxStyle[] styles;
     protected Color caretColor;
-    protected Color selectionColor;
-    protected Color lineHighlightColor;
     protected Color bracketHighlightColor;
     protected Color eolMarkerColor;
     protected boolean blockCaret;
@@ -72,8 +70,6 @@ public class TextAreaPainter extends JComponent implements TabExpander {
         setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
 
         setFont(new Font("Courier New" /*"Monospaced"*/, Font.PLAIN, 14));
-        setForeground(Color.black);
-        setBackground(Color.white);
 
         tabSizeChars = defaults.tabSize;
         blockCaret = defaults.blockCaret;
@@ -81,8 +77,6 @@ public class TextAreaPainter extends JComponent implements TabExpander {
         cols = defaults.cols;
         rows = defaults.rows;
         caretColor = defaults.caretColor;
-        selectionColor = defaults.selectionColor;
-        lineHighlightColor = defaults.lineHighlightColor;
         lineHighlight = defaults.lineHighlight;
         bracketHighlightColor = defaults.bracketHighlightColor;
         bracketHighlight = defaults.bracketHighlight;
@@ -166,36 +160,22 @@ public class TextAreaPainter extends JComponent implements TabExpander {
     /**
      * Returns the selection color.
      */
-    public final Color getSelectionColor() {
-        return selectionColor;
-    }
 
     /**
      * Sets the selection color.
      *
      * @param selectionColor The selection color
      */
-    public final void setSelectionColor(Color selectionColor) {
-        this.selectionColor = selectionColor;
-        invalidateSelectedLines();
-    }
 
     /**
      * Returns the line highlight color.
      */
-    public final Color getLineHighlightColor() {
-        return lineHighlightColor;
-    }
 
     /**
      * Sets the line highlight color.
      *
      * @param lineHighlightColor The line highlight color
      */
-    public final void setLineHighlightColor(Color lineHighlightColor) {
-        this.lineHighlightColor = lineHighlightColor;
-        invalidateSelectedLines();
-    }
 
     /**
      * Returns true if line highlight is enabled, false otherwise.
@@ -398,7 +378,11 @@ public class TextAreaPainter extends JComponent implements TabExpander {
 
         Rectangle clipRect = gfx.getClipBounds();
 
-        gfx.setColor(getBackground());
+        Color background = getBackground();
+        if(background.getBlue() + background.getGreen() + background.getRed() > 384)
+            gfx.setColor(background);
+        else
+            gfx.setColor(background.brighter());
         gfx.fillRect(clipRect.x, clipRect.y, clipRect.width, clipRect.height);
 
         // We don't use yToLine() here because that method doesn't
@@ -583,11 +567,17 @@ public class TextAreaPainter extends JComponent implements TabExpander {
 
         if (selectionStart == selectionEnd) {
             if (lineHighlight) {
-                gfx.setColor(lineHighlightColor);
+                Color background = UIManager.getColor("TextArea.selectionBackground");
+                if(background == null)
+                    background = new Color(0xccccff);
+                if (background.getRed() + background.getGreen() + background.getBlue() > 384)
+                    gfx.setColor(background.darker());
+                else
+                    gfx.setColor(background.brighter());
                 gfx.fillRect(0, y, getWidth(), height);
             }
         } else {
-            gfx.setColor(selectionColor);
+            gfx.setColor(UIManager.getColor("TextArea.selectionBackground"));
 
             int selectionStartLine = textArea.getSelectionStartLine();
             int selectionEndLine = textArea.getSelectionEndLine();

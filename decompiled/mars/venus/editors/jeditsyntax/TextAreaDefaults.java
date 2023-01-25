@@ -38,8 +38,6 @@ public class TextAreaDefaults {
     public int rows;
     public SyntaxStyle[] styles;
     public Color caretColor;
-    public Color selectionColor;
-    public Color lineHighlightColor;
     public boolean lineHighlight;
     public Color bracketHighlightColor;
     public boolean bracketHighlight;
@@ -71,8 +69,6 @@ public class TextAreaDefaults {
         DEFAULTS.rows = 25;
         DEFAULTS.styles = SyntaxUtilities.getCurrentSyntaxStyles(); // was getDefaultSyntaxStyles()
         DEFAULTS.caretColor = Color.black; // Color.red;
-        DEFAULTS.selectionColor = new Color(0xccccff);
-        DEFAULTS.lineHighlightColor = new Color(0xeeeeee);//0xe0e0e0);
         DEFAULTS.lineHighlight = mars.Globals.getSettings().getBooleanSetting(Settings.EDITOR_CURRENT_LINE_HIGHLIGHTING);
         DEFAULTS.bracketHighlightColor = Color.black;
         DEFAULTS.bracketHighlight = false; // assembly language doesn't need this.

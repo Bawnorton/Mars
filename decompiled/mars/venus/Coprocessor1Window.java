@@ -338,12 +338,12 @@ public class Coprocessor1Window extends JPanel implements ActionListener, Observ
                 cell.setForeground(settings.getColorSettingByPosition(Settings.REGISTER_HIGHLIGHT_FOREGROUND));
                 cell.setFont(settings.getFontByPosition(Settings.REGISTER_HIGHLIGHT_FONT));
             } else if (row % 2 == 0) {
-                cell.setBackground(settings.getColorSettingByPosition(Settings.EVEN_ROW_BACKGROUND));
-                cell.setForeground(settings.getColorSettingByPosition(Settings.EVEN_ROW_FOREGROUND));
+                cell.setBackground(UIManager.getColor("Table.background").darker());
+                cell.setForeground(UIManager.getColor("Table.foreground").brighter());
                 cell.setFont(settings.getFontByPosition(Settings.EVEN_ROW_FONT));
             } else {
-                cell.setBackground(settings.getColorSettingByPosition(Settings.ODD_ROW_BACKGROUND));
-                cell.setForeground(settings.getColorSettingByPosition(Settings.ODD_ROW_FOREGROUND));
+                cell.setBackground(UIManager.getColor("Table.background"));
+                cell.setForeground(UIManager.getColor("Table.foreground"));
                 cell.setFont(settings.getFontByPosition(Settings.ODD_ROW_FONT));
             }
             return cell;

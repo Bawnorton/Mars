@@ -65,7 +65,6 @@ public class RegistersPane extends JTabbedPane {
         this.setToolTipTextAt(0, "CPU registers");
         this.setToolTipTextAt(1, "Coprocessor 1 (floating point unit) registers");
         this.setToolTipTextAt(2, "selected Coprocessor 0 (exceptions and interrupts) registers");
-        this.setBackground(Color.black);
     }
 
     /**
