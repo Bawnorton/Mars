@@ -3,6 +3,5 @@ out/
 .idea/
 MARS.iml
 .DS_Store
-v*/
 decompiled.zip
-mars/docs/
+mars/docs
