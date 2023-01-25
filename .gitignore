@@ -2,5 +2,6 @@ out/
 *.asm
 .idea/
 MARS.iml
-.DS_Store/
+.DS_Store
 v*/
+decompiled.zip
