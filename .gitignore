@@ -2,3 +2,4 @@ out/
 *.asm
 .idea/
 MARS.iml
+.DS_Store/
