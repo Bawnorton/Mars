@@ -96,6 +96,14 @@ public class GenericTextArea extends JTextArea implements MARSTextEditingArea {
                     }
                 };
         this.getDocument().addUndoableEditListener(undoableEditListener);
+
+        editPane.setBackground(Color.darkGray);
+        editAreaScrollPane.setBackground(Color.darkGray);
+        sourceCode.setBackground(Color.darkGray);
+
+        editPane.setForeground(Color.white);
+        editAreaScrollPane.setForeground(Color.white);
+        sourceCode.setForeground(Color.white);
     }
 
     /**

@@ -224,6 +224,28 @@ public class VenusUI extends JFrame {
 
         this.pack();
         this.setVisible(true);
+
+        registersTab.setBackground(Color.darkGray);
+        coprocessor1Tab.setBackground(Color.darkGray);
+        coprocessor0Tab.setBackground(Color.darkGray);
+        registersPane.setBackground(Color.darkGray);
+        mainPane.setBackground(Color.darkGray);
+        messagesPane.setBackground(Color.darkGray);
+        splitter.setBackground(Color.darkGray);
+        horizonSplitter.setBackground(Color.darkGray);
+        jp.setBackground(Color.darkGray);
+        center.setBackground(Color.darkGray);
+
+        registersTab.setForeground(Color.white);
+        coprocessor1Tab.setForeground(Color.white);
+        coprocessor0Tab.setForeground(Color.white);
+        registersPane.setForeground(Color.white);
+        mainPane.setForeground(Color.white);
+        messagesPane.setForeground(Color.white);
+        splitter.setForeground(Color.white);
+        horizonSplitter.setForeground(Color.white);
+        jp.setForeground(Color.white);
+        center.setForeground(Color.white);
     }
 
     /**
