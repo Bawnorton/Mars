@@ -1,6 +1,7 @@
 package mars.assembler;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /*
 Copyright (c) 2003-2012,  Pete Sanderson and Kenneth Vollmar
@@ -65,21 +66,17 @@ public final class Directives {
     public static final Directives END_MACRO = new Directives(".end_macro", "End macro definition.  See .macro");
     /*  INCLUDE added by DPS 11 Jan 2013 */
     public static final Directives INCLUDE = new Directives(".include", "Insert the contents of the specified file.  Put filename in quotes.");
-    private static final ArrayList directiveList = new ArrayList();
+    private static final List<Directives> directiveList;
     private final String descriptor;
     private final String description; // help text
 
-    private Directives() {
-        // private ctor assures no objects can be created other than those above.
-        this.descriptor = "generic";
-        this.description = "";
-        directiveList.add(this);
+    static {
+        directiveList = List.of(DATA, TEXT, WORD, ASCII, ASCIIZ, BYTE, ALIGN, HALF, SPACE, DOUBLE, FLOAT, EXTERN, KDATA, KTEXT, GLOBL, SET, EQV, MACRO, END_MACRO, INCLUDE);
     }
 
     private Directives(String name, String description) {
         this.descriptor = name;
         this.description = description;
-        directiveList.add(this);
     }
 
     /**
@@ -127,7 +124,7 @@ public final class Directives {
      *
      * @return MIPS Directive
      **/
-    public static ArrayList getDirectiveList() {
+    public static List<Directives> getDirectiveList() {
         return directiveList;
     }
 

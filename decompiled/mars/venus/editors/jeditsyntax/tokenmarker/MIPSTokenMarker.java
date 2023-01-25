@@ -16,10 +16,7 @@ import mars.venus.editors.jeditsyntax.KeywordMap;
 import mars.venus.editors.jeditsyntax.PopupHelpItem;
 
 import javax.swing.text.Segment;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * MIPS token marker.
@@ -93,7 +90,7 @@ public class MIPSTokenMarker extends TokenMarker {
                 cKeywords.add(((mars.mips.instructions.Instruction) instructionSet.get(i)).getName(), Token.KEYWORD1);
             }
             // add assembler directives
-            java.util.ArrayList directiveSet = mars.assembler.Directives.getDirectiveList();
+            List<Directives> directiveSet = mars.assembler.Directives.getDirectiveList();
             for (int i = 0; i < directiveSet.size(); i++) {
                 cKeywords.add(((mars.assembler.Directives) directiveSet.get(i)).getName(), Token.KEYWORD2);
             }
