@@ -559,8 +559,7 @@ public class MarsLaunch {
                         private int lastAddress = 0;
 
                         public void update(Observable o, Object obj) {
-                            if (obj instanceof AccessNotice) {
-                                AccessNotice notice = (AccessNotice) obj;
+                            if (obj instanceof AccessNotice notice) {
                                 if (!notice.accessIsFromMIPS())
                                     return;
                                 if (notice.getAccessType() != AccessNotice.READ)

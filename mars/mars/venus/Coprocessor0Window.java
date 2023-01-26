@@ -193,8 +193,7 @@ public class Coprocessor0Window extends JPanel implements Observer {
                 // Simulated MIPS execution stops.  Stop responding.
                 Coprocessor0.deleteRegistersObserver(this);
             }
-        } else if (obj instanceof RegisterAccessNotice) {
-            RegisterAccessNotice access = (RegisterAccessNotice) obj;
+        } else if (obj instanceof RegisterAccessNotice access) {
             // NOTE: each register is a separate Observable
             if (access.getAccessType() == AccessNotice.WRITE) {
                 // For now, use highlighting technique used by Label Window feature to highlight

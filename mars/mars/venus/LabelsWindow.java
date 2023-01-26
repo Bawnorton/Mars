@@ -448,8 +448,7 @@ public class LabelsWindow extends JInternalFrame {
         // Implement cell tool tips.  All of them are the same (although they could be customized).
         public Component prepareRenderer(TableCellRenderer renderer, int rowIndex, int vColIndex) {
             Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
-            if (c instanceof JComponent) {
-                JComponent jc = (JComponent) c;
+            if (c instanceof JComponent jc) {
                 jc.setToolTipText("Click on label or address to view it in Text/Data Segment");
             }
             return c;

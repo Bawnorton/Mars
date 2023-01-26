@@ -321,8 +321,7 @@ public class TextSegmentWindow extends JInternalFrame implements Observer {
             if (Globals.getSettings().getBooleanSetting(Settings.SELF_MODIFYING_CODE_ENABLED)) {
                 addAsTextSegmentObserver();
             }
-        } else if (obj instanceof MemoryAccessNotice) {
-            MemoryAccessNotice access = (MemoryAccessNotice) obj;
+        } else if (obj instanceof MemoryAccessNotice access) {
             // NOTE: observable != Memory.getInstance() because Memory class delegates notification duty.
             // This will occur only if running program has written to text segment (self-modifying code)
             if (access.getAccessType() == AccessNotice.WRITE) {

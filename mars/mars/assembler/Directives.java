@@ -71,7 +71,7 @@ public final class Directives {
     private final String description; // help text
 
     static {
-        directiveList = new ArrayList<Directives>() {{add(DATA);add(TEXT);add(WORD);add(ASCII);add(ASCIIZ);add(BYTE);add(ALIGN);add(HALF);add(SPACE);add(DOUBLE);add(FLOAT);add(EXTERN);add(KDATA);add(KTEXT);add(GLOBL);add(SET);add(EQV);add(MACRO);add(END_MACRO);add(INCLUDE);}};
+        directiveList = List.of(DATA, TEXT, WORD, ASCII, ASCIIZ, BYTE, ALIGN, HALF, SPACE, DOUBLE, FLOAT, EXTERN, KDATA, KTEXT, GLOBL, SET, EQV, MACRO, END_MACRO, INCLUDE);
     }
 
     private Directives(String name, String description) {
