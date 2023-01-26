@@ -152,7 +152,8 @@ public class Macro {
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Macro macro) {
+        if (obj instanceof Macro) {
+            Macro macro = (Macro) obj;
             return macro.getName().equals(name) && (macro.args.size() == args.size());
         }
         return super.equals(obj);

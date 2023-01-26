@@ -2683,7 +2683,8 @@ public class InstructionSet {
         ArrayList matchMaps = new ArrayList();
         for (int i = 0; i < instructionList.size(); i++) {
             Object rawInstr = instructionList.get(i);
-            if (rawInstr instanceof BasicInstruction basic) {
+            if (rawInstr instanceof BasicInstruction) {
+                BasicInstruction basic = (BasicInstruction) rawInstr;
                 Integer mask = Integer.valueOf(basic.getOpcodeMask());
                 Integer match = Integer.valueOf(basic.getOpcodeMatch());
                 HashMap matchMap = (HashMap) maskMap.get(mask);

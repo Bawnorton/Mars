@@ -1450,9 +1450,10 @@ public class Memory extends Observable {
         // Useful to have for future refactoring, if it actually becomes worthwhile to sort
         // these or put 'em in a tree (rather than sequential search through list).
         public int compareTo(Object obj) {
-            if (!(obj instanceof MemoryObservable mo)) {
+            if (!(obj instanceof MemoryObservable)) {
                 throw new ClassCastException();
             }
+            MemoryObservable mo = (MemoryObservable) obj;
             if (this.lowAddress < mo.lowAddress || this.lowAddress == mo.lowAddress && this.highAddress < mo.highAddress) {
                 return -1;
             }

@@ -377,7 +377,8 @@ public class HelpHelpAction extends GuiAction {
         public void hyperlinkUpdate(HyperlinkEvent e) {
             if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                 JEditorPane pane = (JEditorPane) e.getSource();
-                if (e instanceof HTMLFrameHyperlinkEvent evt) {
+                if (e instanceof HTMLFrameHyperlinkEvent) {
+                    HTMLFrameHyperlinkEvent evt = (HTMLFrameHyperlinkEvent) e;
                     HTMLDocument doc = (HTMLDocument) pane.getDocument();
                     doc.processHTMLFrameHyperlinkEvent(evt);
                 } else {
@@ -395,7 +396,8 @@ public class HelpHelpAction extends GuiAction {
                                 public void hyperlinkUpdate(HyperlinkEvent e) {
                                     if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                                         JEditorPane pane = (JEditorPane) e.getSource();
-                                        if (e instanceof HTMLFrameHyperlinkEvent evt) {
+                                        if (e instanceof HTMLFrameHyperlinkEvent) {
+                                            HTMLFrameHyperlinkEvent evt = (HTMLFrameHyperlinkEvent) e;
                                             HTMLDocument doc = (HTMLDocument) pane.getDocument();
                                             doc.processHTMLFrameHyperlinkEvent(evt);
                                         } else {

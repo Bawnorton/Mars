@@ -272,8 +272,9 @@ public class Coprocessor1Window extends JPanel implements ActionListener, Observ
                 // Simulated MIPS execution stops.  Stop responding.
                 Coprocessor1.deleteRegistersObserver(this);
             }
-        } else if (obj instanceof RegisterAccessNotice access) {
+        } else if (obj instanceof RegisterAccessNotice) {
             // NOTE: each register is a separate Observable
+            RegisterAccessNotice access = (RegisterAccessNotice) obj;
             if (access.getAccessType() == AccessNotice.WRITE) {
                 // For now, use highlighting technique used by Label Window feature to highlight
                 // memory cell corresponding to a selected label.  The highlighting is not

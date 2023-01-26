@@ -756,8 +756,9 @@ public class VenusUI extends JFrame {
         theme.add(defaultTheme);
 
         Set<Class<?>> classes = Reflections.getAllSubTypesOf(LookAndFeel.class);
-        classes.addAll(List.of(MetalLookAndFeel.class, NimbusLookAndFeel.class));
-        for(Class<?> clazz: classes.stream().sorted(Comparator.comparing(Class::getName)).toList()){
+        classes.add(MetalLookAndFeel.class);
+        classes.add(NimbusLookAndFeel.class);
+        for(Class<?> clazz: classes.stream().sorted(Comparator.comparing(Class::getName)).collect(Collectors.toList())){
             try {
                 Constructor<?> constructor;
                 try {
@@ -767,7 +768,8 @@ public class VenusUI extends JFrame {
                 }
                 constructor.setAccessible(true);
                 Object object = constructor.newInstance();
-                if(object instanceof LookAndFeel lookAndFeel) {
+                if(object instanceof LookAndFeel) {
+                    LookAndFeel lookAndFeel = (LookAndFeel) object;
                     theme.add(new JCheckBoxMenuItem(new GuiAction(lookAndFeel.getName(), null, null, null, null, mainUI) {
                         @Override
                         public void actionPerformed(ActionEvent e) {

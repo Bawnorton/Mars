@@ -2252,7 +2252,8 @@ public class JEditTextArea extends JComponent {
         }
 
         public boolean addEdit(UndoableEdit edit) {
-            if (edit instanceof CaretUndo cedit) {
+            if (edit instanceof CaretUndo) {
+                CaretUndo cedit = (CaretUndo) edit;
                 start = cedit.start;
                 end = cedit.end;
                 cedit.die();

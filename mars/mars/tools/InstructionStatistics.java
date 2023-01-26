@@ -278,7 +278,8 @@ public class InstructionStatistics extends AbstractMarsToolAndApplication {
             return;
 
         // check for a read access in the text segment
-        if (notice.getAccessType() == AccessNotice.READ && notice instanceof MemoryAccessNotice memAccNotice) {
+        if (notice.getAccessType() == AccessNotice.READ && notice instanceof MemoryAccessNotice) {
+            MemoryAccessNotice memAccNotice = (MemoryAccessNotice) notice;
 
             // now it is safe to make a cast of the notice
 
