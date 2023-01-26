@@ -379,10 +379,7 @@ public class TextAreaPainter extends JComponent implements TabExpander {
         Rectangle clipRect = gfx.getClipBounds();
 
         Color background = getBackground();
-        if(background.getBlue() + background.getGreen() + background.getRed() > 384)
-            gfx.setColor(background);
-        else
-            gfx.setColor(background.brighter());
+        gfx.setColor(background);
         gfx.fillRect(clipRect.x, clipRect.y, clipRect.width, clipRect.height);
 
         // We don't use yToLine() here because that method doesn't
@@ -558,6 +555,21 @@ public class TextAreaPainter extends JComponent implements TabExpander {
             paintCaret(gfx, line, y);
     }
 
+    private boolean isCloserToBlack(Color c) {
+        int r = c.getRed();
+        int g = c.getGreen();
+        int b = c.getBlue();
+        return (r + g + b) < 384;
+    }
+
+    private Color adjustColour(Color color) {
+        if(isCloserToBlack(color)) {
+            return new Color(Math.min(255, color.getRed() + 10), Math.min(255, color.getGreen() + 10), Math.min(255, color.getBlue() + 10));
+        } else {
+            return new Color(Math.max(0, color.getRed() - 10), Math.max(0, color.getGreen() - 10), Math.max(0, color.getBlue() - 10));
+        }
+    }
+
     protected void paintLineHighlight(Graphics gfx, int line, int y) {//System.out.println("paintLineHighlight "+ (++count));
         int height = fm.getHeight();
         y += fm.getLeading() + fm.getMaxDescent();
@@ -567,17 +579,17 @@ public class TextAreaPainter extends JComponent implements TabExpander {
 
         if (selectionStart == selectionEnd) {
             if (lineHighlight) {
-                Color background = UIManager.getColor("TextArea.selectionBackground");
+                Color background = getBackground();
                 if(background == null)
                     background = new Color(0xccccff);
-                if (background.getRed() + background.getGreen() + background.getBlue() > 384)
-                    gfx.setColor(background.darker());
-                else
-                    gfx.setColor(background.brighter());
+                gfx.setColor(adjustColour(background));
                 gfx.fillRect(0, y, getWidth(), height);
             }
         } else {
-            gfx.setColor(UIManager.getColor("TextArea.selectionBackground"));
+            Color background = getBackground();
+            if(background == null)
+                background = new Color(0xccccff);
+            gfx.setColor(adjustColour(background));
 
             int selectionStartLine = textArea.getSelectionStartLine();
             int selectionEndLine = textArea.getSelectionEndLine();

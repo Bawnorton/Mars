@@ -1,5 +1,6 @@
 package mars.venus;
 
+import li.flor.nativejfilechooser.NativeJFileChooser;
 import mars.Globals;
 import mars.MIPSprogram;
 import mars.ProcessingException;
@@ -539,7 +540,7 @@ public class EditTabbedPane extends JTabbedPane {
         public FileOpener(Editor theEditor) {
             this.mostRecentlyOpenedFile = null;
             this.theEditor = theEditor;
-            this.fileChooser = new JFileChooser();
+            this.fileChooser = new NativeJFileChooser();
             this.listenForUserAddedFileFilter = new ChoosableFileFilterChangeListener();
             this.fileChooser.addPropertyChangeListener(this.listenForUserAddedFileFilter);
 
@@ -559,7 +560,7 @@ public class EditTabbedPane extends JTabbedPane {
             // has been added by the user.
             setChoosableFileFilters();
             // get name of file to be opened and load contents into text editing area.
-            fileChooser.setCurrentDirectory(new File(theEditor.getCurrentOpenDirectory()));
+            fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
             // Set default to previous file opened, if any.  This is useful in conjunction
             // with option to assemble file automatically upon opening.  File likely to have
             // been edited externally (e.g. by Mipster).
