@@ -1,5 +1,6 @@
 package mars;
 
+import com.bawnorton.Reflections;
 import mars.assembler.SymbolTable;
 import mars.mips.hardware.Memory;
 import mars.mips.instructions.InstructionSet;
@@ -7,10 +8,12 @@ import mars.mips.instructions.syscalls.SyscallNumberOverride;
 import mars.util.PropertiesFile;
 import mars.venus.VenusUI;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Properties;
-import java.util.StringTokenizer;
+import javax.swing.*;
+import javax.swing.plaf.metal.MetalLookAndFeel;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
+import java.awt.*;
+import java.util.*;
+import java.util.List;
 	
 /*
 Copyright (c) 2003-2008,  Pete Sanderson and Kenneth Vollmar
@@ -173,7 +176,6 @@ public class Globals {
             memory.clear(); // will establish memory configuration from setting
         }
     }
-
     // Read byte limit of Run I/O or MARS Messages text to buffer.
     private static int getMessageLimit() {
         return getIntegerProperty(configPropertiesFile, "MessageLimit", 1000000);

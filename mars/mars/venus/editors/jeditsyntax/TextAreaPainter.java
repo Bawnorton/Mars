@@ -524,8 +524,7 @@ public class TextAreaPainter extends JComponent implements TabExpander {
         gfx.setFont(defaultFont);
         gfx.setColor(defaultColor);
         y += fm.getHeight();
-        x = SyntaxUtilities.paintSyntaxLine(currentLine,
-                currentLineTokens, styles, this, gfx, x, y);
+        x = SyntaxUtilities.paintSyntaxLine(currentLine, currentLineTokens, SyntaxUtilities.getDefaultSyntaxStyles(), this, gfx, x, y);
         //          count++;
         //          if (count % 100 == 10) {
         //             textArea.setToolTipText("Setting Text at Count of "+count); System.out.println("set tool tip");

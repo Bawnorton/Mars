@@ -109,22 +109,28 @@ public class SyntaxUtilities {
      * <code>setStyles()</code> method of <code>SyntaxDocument</code>
      * to use the default syntax styles.
      */
+    private static boolean isDark(Color c) {
+        return c.getRed() + c.getGreen() + c.getBlue() < 384;
+    }
+
     public static SyntaxStyle[] getDefaultSyntaxStyles() {
         SyntaxStyle[] styles = new SyntaxStyle[Token.ID_COUNT];
 
         // SyntaxStyle constructor params: color, italic?, bold?
         // All need to be assigned even if not used by language (no gaps in array)
-        styles[Token.NULL] = new SyntaxStyle(Color.black, false, false);
-        styles[Token.COMMENT1] = new SyntaxStyle(new Color(0x00CC33), true, false);//(Color.black,true,false);
-        styles[Token.COMMENT2] = new SyntaxStyle(new Color(0x990033), true, false);
-        styles[Token.KEYWORD1] = new SyntaxStyle(Color.blue, false, false);//(Color.black,false,true);
-        styles[Token.KEYWORD2] = new SyntaxStyle(Color.magenta, false, false);
-        styles[Token.KEYWORD3] = new SyntaxStyle(Color.red, false, false);//(new Color(0x009600),false,false);
-        styles[Token.LITERAL1] = new SyntaxStyle(new Color(0x00CC33), false, false);//(new Color(0x650099),false,false);
-        styles[Token.LITERAL2] = new SyntaxStyle(new Color(0x00CC33), false, false);//(new Color(0x650099),false,true);
-        styles[Token.LABEL] = new SyntaxStyle(Color.black, true, false);//(new Color(0x990033),false,true);
-        styles[Token.OPERATOR] = new SyntaxStyle(Color.black, false, true);
-        styles[Token.INVALID] = new SyntaxStyle(Color.red, false, false);
+        boolean isDark = isDark(UIManager.getColor("Panel.background"));
+        Color green = isDark ? new Color(0x5DFF7C) : new Color(0x00CC33);
+        styles[Token.NULL] = new SyntaxStyle(isDark ? Color.lightGray : Color.black, false, false);
+        styles[Token.COMMENT1] = new SyntaxStyle(green, true, false);//(Color.black,true,false);
+        styles[Token.COMMENT2] = new SyntaxStyle(isDark ? new Color(0xB33C69) : new Color(0x990033), true, false);
+        styles[Token.KEYWORD1] = new SyntaxStyle(isDark ? new Color(0x4E99E6) : Color.blue, false, false);//(Color.black,false,true);
+        styles[Token.KEYWORD2] = new SyntaxStyle(isDark ? new Color(0xFF93FF) : Color.magenta, false, false);
+        styles[Token.KEYWORD3] = new SyntaxStyle(isDark ? new Color(0xFF6767) : Color.red, false, false);//(new Color(0x009600),false,false);
+        styles[Token.LITERAL1] = new SyntaxStyle(green, false, false);//(new Color(0x650099),false,false);
+        styles[Token.LITERAL2] = new SyntaxStyle(green, false, false);//(new Color(0x650099),false,true);
+        styles[Token.LABEL] = new SyntaxStyle(isDark ? Color.lightGray : Color.black, true, false);//(new Color(0x990033),false,true);
+        styles[Token.OPERATOR] = new SyntaxStyle(isDark ? Color.lightGray : Color.black, false, true);
+        styles[Token.INVALID] = new SyntaxStyle(isDark ? new Color(0xFF4B4B) : Color.red, false, false);
         styles[Token.MACRO_ARG] = new SyntaxStyle(new Color(150, 150, 0), false, false);
         return styles;
     }
@@ -160,7 +166,6 @@ public class SyntaxUtilities {
         Font defaultFont = gfx.getFont();
         Color defaultColor = gfx.getColor();
 
-        int offset = 0;
         for (; ; ) {
             byte id = tokens.id;
             if (id == Token.END)
@@ -175,42 +180,8 @@ public class SyntaxUtilities {
             } else
                 styles[id].setGraphicsFlags(gfx, defaultFont);
             line.count = length;
-
-            if (id == Token.KEYWORD1) {
-                //System.out.println("Instruction: "+line);
-                if (!popupShowing) {// System.out.println("creating popup");
-//                   JComponent paintArea = (JComponent) expander;
-//                   JToolTip tip = paintArea.createToolTip();
-//                   tip.setTipText("Instruction: "+line);
-//                   Point screenLocation = paintArea.getLocationOnScreen();
-//                   PopupFactory popupFactory = PopupFactory.getSharedInstance();
-//                   popup = popupFactory.getPopup(paintArea, tip, screenLocation.x + x, screenLocation.y + y);
-//                   popupShowing = true;
-//                   popup.show();
-//                   int delay = 200; //milliseconds
-//                   ActionListener taskPerformer =
-//                       new ActionListener() {
-//                          public void actionPerformed(ActionEvent evt) {
-//                            //popupShowing = false;
-//                            if (popup!= null) {
-//                               popup.hide();
-//                            }
-//                         }
-//                      };
-//                   Timer popupTimer = new Timer(delay, taskPerformer);
-//                   popupTimer.setRepeats(false);
-//                   popupTimer.start();
-
-                }
-
-                // ToolTipManager.sharedInstance().mouseMoved(
-                //	   new MouseEvent((Component)expander, MouseEvent.MOUSE_MOVED, new java.util.Date().getTime(), 0, x, y, 0, false));
-                //    new InstructionMouseEvent((Component)expander, x, y, line));
-            }
-
             x = Utilities.drawTabbedText(line, x, y, gfx, expander, 0);
             line.offset += length;
-            offset += length;
 
             tokens = tokens.next;
         }
