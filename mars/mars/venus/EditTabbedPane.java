@@ -1,5 +1,6 @@
 package mars.venus;
 
+import com.sun.javafx.runtime.VersionInfo;
 import li.flor.nativejfilechooser.NativeJFileChooser;
 import mars.Globals;
 import mars.MIPSprogram;
@@ -538,9 +539,18 @@ public class EditTabbedPane extends JTabbedPane {
         private final Editor theEditor;
 
         public FileOpener(Editor theEditor) {
+            JFileChooser fileChooser1;
             this.mostRecentlyOpenedFile = null;
             this.theEditor = theEditor;
-            this.fileChooser = new NativeJFileChooser();
+            try {
+                System.out.println("Trying to use JavaFX NativeJFileChooser");
+                fileChooser1 = new NativeJFileChooser();
+                System.out.println("Using JavaFX NativeJFileChooser");
+            } catch (ExceptionInInitializerError e){
+                System.out.println("JavaFX not found, using Swing JFileChooser");
+                fileChooser1 = new JFileChooser();
+            }
+            this.fileChooser = fileChooser1;
             this.listenForUserAddedFileFilter = new ChoosableFileFilterChangeListener();
             this.fileChooser.addPropertyChangeListener(this.listenForUserAddedFileFilter);
 
