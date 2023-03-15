@@ -202,20 +202,115 @@ public class JEditTextArea extends JComponent {
         // One can also accomplish this using: setFocusTraversalKeysEnabled(false);
         // but that seems heavy-handed.
         // DPS 12May2010
-        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(
-                new KeyEventDispatcher() {
-                    public boolean dispatchKeyEvent(KeyEvent e) {
-                        if (JEditTextArea.this.isFocusOwner() && e.getKeyCode() == KeyEvent.VK_TAB && e.getModifiers() == 0) {
-                            processKeyEvent(e);
-                            return true;
-                        } else {
-                            return false;
-                        }
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
+            if (!this.isFocusOwner() || e.getID() != KeyEvent.KEY_PRESSED) {
+                return false;
+            }
+            if (e.getKeyCode() == KeyEvent.VK_TAB && e.getModifiersEx() == 0) {
+                // get the current selected lines
+                if (this.getSelectionStart() != this.getSelectionEnd()) {
+                    int startLine = this.getLineOfOffset(this.getSelectionStart());
+                    int endLine = this.getLineOfOffset(this.getSelectionEnd());
+                    // indent the selected lines
+                    for (int i = startLine; i <= endLine; i++) {
+                        this.indentLine(i);
                     }
-                });
 
+                    this.setSelectionStart(this.getLineStartOffset(startLine));
+                    this.setSelectionEnd(this.getLineEndOffset(endLine));
+                    this.setCaretPosition(this.getLineStartOffset(startLine));
+                } else {
+                    // if there is no selection, just press the tab key
+                    processKeyEvent(e);
+                }
+
+                return true;
+            } else if (e.getKeyCode() == KeyEvent.VK_TAB && e.isShiftDown()) {
+                // get the current selected lines
+                int startLine = this.getCaretLine();
+                int endLine = this.getCaretLine();
+                if (this.getSelectionStart() != this.getSelectionEnd()) {
+                    startLine = this.getLineOfOffset(this.getSelectionStart());
+                    endLine = this.getLineOfOffset(this.getSelectionEnd());
+                }
+                // unindent the selected lines
+                for (int i = startLine; i <= endLine; i++) {
+                    this.unindentLine(i);
+                }
+                this.setSelectionStart(this.getLineStartOffset(startLine));
+                this.setSelectionEnd(this.getLineEndOffset(endLine));
+                this.setCaretPosition(this.getLineStartOffset(startLine));
+                return true;
+            } else if (e.getKeyCode() == KeyEvent.VK_SLASH && (e.isMetaDown() || e.isControlDown())) {
+                // get the current selection
+                int start = this.getSelectionStart();
+                // decrease start until a new line is found, or the start of the document
+                while (start > 0 && this.getText(start - 1, 1).charAt(0) != '\n') {
+                    start--;
+                }
+                int end = this.getSelectionEnd();
+                if (start == end) {
+                    // if there is no selection, select the current line
+                    start = this.getLineStartOffset(this.getCaretLine());
+                    end = this.getLineEndOffset(this.getCaretLine()) - 1;
+                }
+                // get all the text
+                String text = this.getText();
+                // get the text of the lines in the selection
+                String[] lines = text.substring(start, end).split("\n");
+                // check if the first line is a comment
+                boolean isComment = this.getLineText(this.getLineOfOffset(start)).trim().startsWith("#");
+                // toggle the comment
+                for (int i = 0; i < lines.length; i++) {
+                    if (isComment) {
+                        lines[i] = lines[i].replaceFirst("#", "");
+                        // loop through the line and check if the first character is at index % 4 == 0
+                        // if not, remove spaces until it is
+                        while (lines[i].length() > 0 && lines[i].charAt(0) == ' ' && lines[i].length() % 4 != 0) {
+                            lines[i] = lines[i].substring(1);
+                        }
+                    } else {
+                        lines[i] = "# " + lines[i];
+                    }
+                }
+                // replace the text
+                String newText = String.join("\n", lines);
+                this.replaceRange(newText, start, end);
+                this.setSelectionStart(start);
+                this.setSelectionEnd(start + newText.length());
+                this.setCaretPosition(start);
+                return true;
+            }
+            return false;
+        });
         // We don't seem to get the initial focus event?
         focusedComponent = this;
+    }
+
+    private void unindentLine(int i) {
+        String text = this.getLineText(i);
+        if (text.startsWith("\t")) {
+            text = text.substring(1);
+        } else if (text.startsWith("    ")) {
+            text = text.substring(4);
+        }
+        int start = this.getLineStartOffset(i);
+        int end = this.getLineEndOffset(i);
+        this.replaceRange(text, start, end);
+    }
+
+    private void indentLine(int i) {
+        if(this.getLineLength(i) <= 0) {
+            return;
+        }
+        int start = this.getLineStartOffset(i);
+        int end = this.getLineEndOffset(i);
+        String newLine = "\t" + this.getLineText(i);
+        this.replaceRange(newLine, start, end);
+    }
+
+    private void replaceRange(String join, int start, int end) {
+        setText(join, start, end);
     }
 
     /**
@@ -851,6 +946,18 @@ public class JEditTextArea extends JComponent {
         }
     }
 
+    public void setText(String text, int start, int end) {
+        try {
+            document.beginCompoundEdit();
+            document.remove(start, end - start);
+            document.insertString(start, text, null);
+        } catch (BadLocationException bl) {
+            bl.printStackTrace();
+        } finally {
+            document.endCompoundEdit();
+        }
+    }
+
     /**
      * Returns the specified substring of the document.
      *
@@ -1381,7 +1488,7 @@ public class JEditTextArea extends JComponent {
     /**
      * Sets if the selection should be rectangular.
      *
-     * @param overwrite True if the selection should be rectangular,
+     * @param rectSelect True if the selection should be rectangular,
      *                  false otherwise.
      */
     public final void setSelectionRectangular(boolean rectSelect) {

@@ -14,6 +14,7 @@ import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.CompoundEdit;
 import javax.swing.undo.UndoManager;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 
 /*
 Copyright (c) 2003-2010,  Pete Sanderson and Kenneth Vollmar
